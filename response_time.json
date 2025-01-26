@@ -1,0 +1,98 @@
+[
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239becce9"
+        },
+        "date": "2025-01-20",
+        "time": "06:30:15",
+        "response_time": 150
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccea"
+        },
+        "date": "2025-01-20",
+        "time": "08:15:21",
+        "response_time": 108
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239becceb"
+        },
+        "date": "2025-01-24",
+        "time": "17:35:47",
+        "response_time": 126
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccec"
+        },
+        "date": "2025-01-21",
+        "time": "07:05:34",
+        "response_time": 132
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239becced"
+        },
+        "date": "2025-01-21",
+        "time": "09:30:45",
+        "response_time": 210
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccee"
+        },
+        "date": "2025-01-22",
+        "time": "06:45:00",
+        "response_time": 120
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccef"
+        },
+        "date": "2025-01-22",
+        "time": "08:30:25",
+        "response_time": 192
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccf0"
+        },
+        "date": "2025-01-23",
+        "time": "16:45:25",
+        "response_time": 204
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccf1"
+        },
+        "date": "2025-01-23",
+        "time": "06:50:12",
+        "response_time": 168
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccf2"
+        },
+        "date": "2025-01-23",
+        "time": "08:45:38",
+        "response_time": 198
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccf3"
+        },
+        "date": "2025-01-24",
+        "time": "05:55:15",
+        "response_time": 138
+    },
+    {
+        "_id": {
+            "$oid": "6795963ddd70ff3239beccf4"
+        },
+        "date": "2025-01-24",
+        "time": "08:05:10",
+        "response_time": 108
+    }
+]

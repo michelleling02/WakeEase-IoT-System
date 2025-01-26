@@ -1,0 +1,130 @@
+[
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccb5"
+        },
+        "date": "2025-01-20",
+        "time": "08:15:21",
+        "led_duration": 7200
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccb6"
+        },
+        "date": "2025-01-20",
+        "time": "12:30:45",
+        "led_duration": 9000
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccb7"
+        },
+        "date": "2025-01-20",
+        "time": "18:45:10",
+        "led_duration": 5400
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccb8"
+        },
+        "date": "2025-01-20",
+        "time": "07:05:34",
+        "led_duration": 10800
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccb9"
+        },
+        "date": "2025-01-21",
+        "time": "14:22:10",
+        "led_duration": 6480
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccba"
+        },
+        "date": "2025-01-21",
+        "time": "20:15:56",
+        "led_duration": 4320
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccbb"
+        },
+        "date": "2025-01-21",
+        "time": "06:45:00",
+        "led_duration": 18000
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccbc"
+        },
+        "date": "2025-01-22",
+        "time": "13:15:30",
+        "led_duration": 10800
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccbd"
+        },
+        "date": "2025-01-22",
+        "time": "19:30:25",
+        "led_duration": 5760
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccbe"
+        },
+        "date": "2025-01-22",
+        "time": "08:00:12",
+        "led_duration": 14400
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccbf"
+        },
+        "date": "2025-01-23",
+        "time": "15:45:38",
+        "led_duration": 9000
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccc0"
+        },
+        "date": "2025-01-23",
+        "time": "09:15:47",
+        "led_duration": 13320
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccc1"
+        },
+        "date": "2025-01-23",
+        "time": "13:50:22",
+        "led_duration": 10440
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccc2"
+        },
+        "date": "2025-01-23",
+        "time": "22:40:05",
+        "led_duration": 3600
+    },
+    {
+        "_id": {
+            "$oid": "6795962cdd70ff3239beccc3"
+        },
+        "date": "2025-01-24",
+        "time": "14:30:30",
+        "led_duration": 10080
+    },
+    {
+        "_id": {
+            "$oid": "6795962edd70ff3239beccc4"
+        },
+        "date": "2025-01-24",
+        "time": "20:55:10",
+        "led_duration": 5760
+    }
+]
