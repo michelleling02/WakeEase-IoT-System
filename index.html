@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WakeEase Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1, h4 {
+            text-align: center;
+            font-size: 2.0rem; /* Slightly larger for emphasis */
+            font-family: 'Roboto', sans-serif; /* A modern and clean font */
+            font-weight: bold; /* Make the headers stand out */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #007BFF;
+            border: 2px solid #007BFF;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgba(0, 123, 255, 0.2);
+        }
+
+        button.active {
+            background-color: #007BFF;
+            color: white;
+            border: 2px solid #007BFF;
+        }
+
+        .chart-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        canvas {
+            margin: 20px 0;
+            padding: 10px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary {
+            font-size: 1.0rem;
+            color: #000;
+            margin-top: 20px;
+            padding: 10px;
+            background: linear-gradient(135deg, #eaf7ff, #d6f0ff);
+            border-radius: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            border-left: 7px solid #007BFF;
+        }
+
+        .summary p {
+            margin: 10px 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .summary p span {
+            color: #0056b3;
+            font-weight: bold;
+            text-decoration: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to WakeEase Dashboard</h1>
+        <h4>Select chart to view: </h4>
+
+        <div class="button-container">
+            <button onclick="showChart('fanLightContainer')">Fan and Light Usages</button>
+            <button onclick="showChart('sleepContainer')">Sleep Duration Trends</button>
+            <button onclick="showChart('responseTimeContainer')">Alarm Response Times</button>
+        </div>
+
+        <div id="fanLightContainer" class="chart-container">
+            <canvas id="fanLightChart" width="400" height="200"></canvas>
+            <div id="fanLightSummary" class="summary"></div>
+        </div>
+
+        <div id="sleepContainer" class="chart-container">
+            <canvas id="sleepChart" width="400" height="200"></canvas>
+            <div id="sleepSummary" class="summary"></div>
+        </div>
+
+        <div id="responseTimeContainer" class="chart-container">
+            <canvas id="responseTimeChart" width="400" height="200"></canvas>
+            <div id="responseTimeSummary" class="summary"></div>
+        </div>
+    </div>
+
+    <script>
+        function showChart(containerId) {
+            const chartContainers = document.querySelectorAll('.chart-container');
+            chartContainers.forEach(container => container.style.display = 'none');
+            document.getElementById(containerId).style.display = 'flex';
+
+            const buttons = document.querySelectorAll('.button-container button');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            const activeButton = [...buttons].find(button => button.getAttribute('onclick').includes(containerId));
+            if (activeButton) activeButton.classList.add('active');
+        }
+
+        async function fetchAndProcessData(fileName, durationKey, unit = "seconds") {
+            const response = await fetch(fileName);
+            const data = await response.json();
+            const groupedData = {};
+            data.forEach(item => {
+                if (!groupedData[item.date]) groupedData[item.date] = 0;
+                groupedData[item.date] += item[durationKey];
+            });
+
+            for (const date in groupedData) {
+                if (unit === "hours") groupedData[date] /= 3600;
+                if (unit === "minutes") groupedData[date] /= 60;
+            }
+
+            return groupedData;
+        }
+
+        async function renderFanLightChart() {
+            const fanData = await fetchAndProcessData('fan_duration.json', 'fan_duration', 'hours');
+            const lightData = await fetchAndProcessData('led_duration.json', 'led_duration', 'hours');
+
+            const dates = Array.from(new Set([...Object.keys(fanData), ...Object.keys(lightData)])).sort((a, b) => new Date(a) - new Date(b));
+            const fanValues = dates.map(date => fanData[date] || 0);
+            const lightValues = dates.map(date => lightData[date] || 0);
+
+            const ctx = document.getElementById('fanLightChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Fan Duration (hours)',
+                            data: fanValues,
+                            backgroundColor: 'rgba(144, 238, 144, 0.8)'
+                        },
+                        {
+                            label: 'Light Duration (hours)',
+                            data: lightValues,
+                            backgroundColor: 'rgba(255, 182, 193, 0.8)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true },
+                        title: {
+                            display: true,
+                            text: 'Fan and Light Usage per Day'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw.toFixed(2);
+                                    return `${context.dataset.label}: ${value} hours`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Date' } },
+                        y: { title: { display: true, text: 'Duration (hours)' } }
+                    }
+                }
+            });
+
+            const highestFanDay = dates[fanValues.indexOf(Math.max(...fanValues))];
+            const lowestFanDay = dates[fanValues.indexOf(Math.min(...fanValues))];
+            const avgFan = (fanValues.reduce((a, b) => a + b, 0) / fanValues.length).toFixed(2);
+
+            const highestLightDay = dates[lightValues.indexOf(Math.max(...lightValues))];
+            const lowestLightDay = dates[lightValues.indexOf(Math.min(...lightValues))];
+            const avgLight = (lightValues.reduce((a, b) => a + b, 0) / lightValues.length).toFixed(2);
+
+            document.getElementById('fanLightSummary').innerHTML = `
+                <p>Your longest usage was on: <span>${highestFanDay}</span></p>
+                <p>Your shortest usage was on: <span>${lowestFanDay}</span></p>
+                <p>Your average fan usage: <span>${avgFan} hours</span></p>
+                <p>Your average light usage: <span>${avgLight} hours</span></p>
+            `;
+        }
+
+        async function renderSleepChart() {
+            const response = await fetch('sleep_duration.json');
+            const data = await response.json();
+
+            const groupedData = {};
+            data.forEach(item => {
+                if (!groupedData[item.date]) groupedData[item.date] = [];
+                groupedData[item.date].push(item.sleep_duration / 3600);
+            });
+
+            const dates = Object.keys(groupedData).sort((a, b) => new Date(a) - new Date(b));
+            const totalDurations = dates.map(date =>
+                groupedData[date].reduce((sum, duration) => sum + duration, 0)
+            );
+
+            const napCounts = dates.map(date => groupedData[date].length);
+            const napTooltips = dates.map(date => {
+                const naps = groupedData[date];
+                return naps.map((nap, index) => `Nap ${index + 1}: ${nap.toFixed(2)} hours`).join(", ");
+            });
+
+            const ctx = document.getElementById('sleepChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Sleep Duration (hours)',
+                            data: totalDurations,
+                            borderColor: 'rgba(75, 75, 192, 1)',
+                            backgroundColor: 'rgba(75, 75, 192, 0.2)',
+                            borderWidth: 2,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const dateIndex = context.dataIndex;
+                                    const totalHours = totalDurations[dateIndex].toFixed(2);
+                                    return [
+                                        `Total Sleep: ${totalHours} hours`,
+                                        `On this day, you took ${napCounts[dateIndex]} nap(s): ${napTooltips[dateIndex]}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Date' } },
+                        y: { title: { display: true, text: 'Duration (hours)' } }
+                    }
+                }
+            });
+
+            const highestSleepDay = dates[totalDurations.indexOf(Math.max(...totalDurations))];
+            const lowestSleepDay = dates[totalDurations.indexOf(Math.min(...totalDurations))];
+            const avgSleep = (totalDurations.reduce((a, b) => a + b, 0) / totalDurations.length).toFixed(2);
+            const highestNapDay = dates[napCounts.indexOf(Math.max(...napCounts))];
+
+            document.getElementById('sleepSummary').innerHTML = `
+                <p>Your longest sleep duration was on: <span>${highestSleepDay}</span></p>
+                <p>Your shortest sleep duration was on: <span>${lowestSleepDay}</span></p>
+                <p>Your average sleep duration: <span>${avgSleep} hours</span></p>
+                <p>The day you took the most naps: <span>${highestNapDay}</span></p>
+            `;
+        }
+
+        async function renderResponseTimeChart() {
+            const response = await fetch('response_time.json');
+            const data = await response.json();
+
+            const groupedData = {};
+            data.forEach(item => {
+                if (!groupedData[item.date]) groupedData[item.date] = [];
+                groupedData[item.date].push({
+                    responseTime: item.response_time / 60,
+                    time: item.time
+                });
+            });
+
+            const dates = Object.keys(groupedData).sort((a, b) => new Date(a) - new Date(b));
+            const maxAlarms = Math.max(...dates.map(date => groupedData[date].length));
+
+            const datasets = Array.from({ length: maxAlarms }, (_, i) => ({
+                label: `Alarm ${i + 1}`,
+                data: dates.map(date => groupedData[date][i]?.responseTime || 0),
+                backgroundColor: `rgba(70, 130, 180, ${1 - i * 0.2})`
+            }));
+
+            const ctx = document.getElementById('responseTimeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: datasets
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const dateIndex = context.dataIndex;
+                                    const alarmIndex = context.datasetIndex;
+                                    const alarmData = groupedData[dates[dateIndex]][alarmIndex];
+                                    if (alarmData) {
+                                        return `Alarm ${alarmIndex + 1}: ${alarmData.responseTime.toFixed(2)} minutes (Turned off at ${alarmData.time})`;
+                                    }
+                                    return null;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Response Time (minutes)' }, stacked: true },
+                        y: { title: { display: true, text: 'Date' }, stacked: true }
+                    }
+                }
+            });
+
+            const averageResponseTimes = dates.map(date => {
+                const total = groupedData[date].reduce((sum, alarm) => sum + alarm.responseTime, 0);
+                return total / groupedData[date].length;
+            });
+
+            const highestAverageDay = dates[averageResponseTimes.indexOf(Math.max(...averageResponseTimes))];
+            const lowestAverageDay = dates[averageResponseTimes.indexOf(Math.min(...averageResponseTimes))];
+            const avgResponseTime = (averageResponseTimes.reduce((a, b) => a + b, 0) / averageResponseTimes.length).toFixed(2);
+
+            const highestAlarmDay = dates.reduce((highest, date) =>
+                groupedData[date].length > groupedData[highest].length ? date : highest, dates[0]
+            );
+
+            const highestAlarmCount = groupedData[highestAlarmDay].length;
+
+            document.getElementById('responseTimeSummary').innerHTML = `
+                <p>Your longest average time taken to turn off the alarm was on: <span>${highestAverageDay}</span></p>
+                <p>Your shortest average time taken to turn off the alarm was on: <span>${lowestAverageDay}</span></p>
+                <p>The day with highest alarm count: <span>${highestAlarmDay}</span> at <span>${highestAlarmCount}</span></p>
+            `;
+        }
+
+        async function renderAllCharts() {
+            await renderFanLightChart();
+            await renderSleepChart();
+            await renderResponseTimeChart();
+        }
+
+        renderAllCharts();
+    </script>
+</body>
+</html>
