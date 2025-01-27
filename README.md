@@ -1,7 +1,7 @@
 # WakeEase-IoT-System
 ### CPC357 Assignment 2
 
-Link to dashboard: [](https://michelleling02.github.io/WakeEase-IoT-System/)
+Link to dashboard: [https://michelleling02.github.io/WakeEase-IoT-System/](https://michelleling02.github.io/WakeEase-IoT-System/)
 
 ### **Project Overview**
 **WakeEase** is a smart IoT-based system designed to enhance wake-up routines, optimize energy usage, and promote better sleep habits. It leverages automation, real-time tracking, and cloud-based analytics to provide users with a comfortable and efficient bedroom environment.
